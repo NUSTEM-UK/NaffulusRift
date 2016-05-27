@@ -8,4 +8,4 @@ def get_sensor_data():
 while True:
     sleep(100)
     get_sensor_data()
-    microbit.display.show("1", wait=False)
+    display.show("2", wait=False)
