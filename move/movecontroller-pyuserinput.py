@@ -1,27 +1,20 @@
-# Requires `sudo apt-get install libudev-dev`
-# Then:
-# `sudo pip3 install python-uinput`
-# &:
-# `sudo modprobe uinput`
+# PyUserInput test.
+# Requires sudo pip3 install pyuserinput python3-xlib
+#
 # Code heavily based on https://www.raspberrypi.org/learning/microbit-game-controller/worksheet/
 
-# Doesn't actually work - Correctly receives data and emits keyboard events, but
-# Minecraft stubbornly ignores input via uinput. Harrumph.
 
 
 import serial
 from time import sleep
-import uinput
+from pykeyboard import PyKeyboard
 
 def move ():	
 	deadzone_x = 200
 	deadzone_y = 200
+	key_delay = 0.4
 	
-	device = uinput.Device([
-		uinput.KEY_W,
-		uinput.KEY_S,
-		uinput.KEY_A,
-		uinput.KEY_D] )
+	keyboard = PyKeyboard()
 		
 	PORT = "/dev/ttyACM0"
 	#~ PORT = "/dev/serial/by-id/usb-MBED_MBED_CMSIS-DAP_9900023431864e45001210060000003700000000cc4d28bd-if01"
@@ -39,18 +32,26 @@ def move ():
 		try:
 			x, y, z, a, b = data_list
 			if int(x) < (0 - deadzone_x) :
-				#print("a")
-				device.emit_click(uinput.KEY_A)
+				keyboard.press_key('a')
+				time.sleep(key_delay)
+				keyboard.release_key('a')
 			if int(x) > deadzone_x:
-				#print("d")
-				device.emit_click(uinput.KEY_D)
+				keyboard.press_key('d')
+				time.sleep(key_delay)
+				keyboard.release_key('d')
 			if int(y) < (0 - deadzone_y):
-				#print("w")
-				device.emit_click(uinput.KEY_W)
+				keyboard.press_key('w')
+				time.sleep(key_delay)
+				keyboard.release_key('w')
 			if int(y) > deadzone_y:
-				#print("s")
-				device.emit_click(uinput.KEY_S)
-			
+				keyboard.press_key('s')
+				time.sleep(key_delay)
+				keyboard.release_key('s')
+			else:
+				keyboard.release_key('a')
+				keyboard.release_key('d')
+				keyboard.release_key('w')
+				keyboard.release_key('s')
 			#~ print(x, y, z, a, b)
 		
 		except:
