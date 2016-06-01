@@ -10,13 +10,13 @@ from time import sleep
 import uinput
 
 def arduino_map(x, in_min, in_max, out_min, out_max):
-    return  (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
+    return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
 def look():	
     deadzone_x = 200
     deadzone_y = 200
     
-    device = uinput.Device( [uinput.REL_X, uinput.REL_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT] )
+    mouse = uinput.Device( [uinput.REL_X, uinput.REL_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT] )
     
     PORT = "/dev/ttyACM0"
     #~ PORT = "/dev/serial/by-id/usb-MBED_MBED_CMSIS-DAP_9900023431864e45001210060000003700000000cc4d28bd-if01"
@@ -34,12 +34,15 @@ def look():
         try:
             x, y, z, a, b = data_list
             
-            x_mapped = arduino_map(x, -1024, 1024, -20, 20)
-            y_mapped = arduino_map(y, -1024, 1024, -20, 20)
+            #~ x_mapped = arduino_map(x, -1024, 1024, -20, 20)
+            #~ y_mapped = arduino_map(y, -1024, 1024, -20, 20)
             #~ mouse.emit(uinput.REL_X, x_mapped, syn=False)
             #~ mouse.emit(uinput.REL_Y, y_mapped, syn=False)
             #~ 
             #~ print(x_mapped, y_mapped)
+            print(x, y)
+            mouse.emit(uinput.REL_X, (x/10), syn=False)
+            mouse.emit(uinput.REL_Y, (y/10), syn=False)
 
             # if int(x) < (0 - deadzone_x) :
             # if int(x) > deadzone_x:
