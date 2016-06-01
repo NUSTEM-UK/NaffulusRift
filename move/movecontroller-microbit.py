@@ -12,13 +12,14 @@ def get_sensor_data():
 while True:
     sleep(100)
     x, y = get_sensor_data()
+    # Display direction output. For reasons I don't understand, this only works properly for 'S'.
     if int(x) < ( 0 - deadzone_x ):
         display.show("A", wait=False)
-	if int(x) > deadzone_x:
-		display.show("D", wait=False)
-	if int(y) < (0 - deadzone_y):
+    if int(x) > deadzone_x:
+        display.show("D", wait=False)
+    if int(y) < (0 - deadzone_y):
         display.show("W", wait=False)
-	if int(y) > deadzone_y:
+    if int(y) > deadzone_y:
         display.show("S", wait=False)
-	else:
-		display.show(" ", wait=False)
+    else:
+        display.show(" ", wait=False)
