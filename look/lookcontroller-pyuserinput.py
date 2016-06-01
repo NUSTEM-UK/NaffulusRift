@@ -4,7 +4,6 @@
 # Code heavily based on https://www.raspberrypi.org/learning/microbit-game-controller/worksheet/
 
 
-
 import serial
 from time import sleep
 from pykeyboard import PyKeyboard
@@ -14,7 +13,7 @@ def move ():
 	deadzone_y = 200
 	key_delay = 0.4
 	
-	keyboard = PyKeyboard()
+	mouse = PyMouse()
 		
 	PORT = "/dev/ttyACM0"
 	#~ PORT = "/dev/serial/by-id/usb-MBED_MBED_CMSIS-DAP_9900023431864e45001210060000003700000000cc4d28bd-if01"
