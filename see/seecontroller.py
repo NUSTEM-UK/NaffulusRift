@@ -3,7 +3,17 @@ import os
 from PIL import Image
 from mcpi.minecraft import Minecraft
 from mcpi import *
+from gpiozero import Button
+import time
 
+# Define the PhotoButton
+button = Button(4, pull_up = True, bounce_time = 1)
+mc = Minecraft.create()
+
+# Load the PiCamera module as camera
+camera = picamera.PiCamera()
+
+# Define the palette of colours to be using when drawing the image
 minePalette = {
     (255, 255, 255):0, 	#white 0
     (255,165,0): 1,		#orange 1
@@ -23,38 +33,83 @@ minePalette = {
     (0,0,0): 15			#black 15
 }
 
-# Take the photo using the PiCamera
-camera = picamera.PiCamera()
-camera.capture('/home/pi/Desktop/orig.jpeg')
+prevImage = []
 
-# Resize the image using ImageMagick
-os.system("convert /home/pi/Desktop/orig.jpeg -resize 64x64 /home/pi/Desktop/resized.jpeg")
+while True:
+	posPrev = mc.player.getPos()	# continually get the players location
+			
+	if button.is_pressed == True:
+		print('Image request received')
+		
+		# Take the photo using the PiCamera
+		camera.capture('/home/pi/Desktop/orig.jpeg')
 
-# Colourmap the imsage using ImageMagick
-os.system("convert /home/pi/Desktop/resized.jpeg -dither FloydSteinberg -remap /home/pi/Desktop/test.gif /home/pi/Desktop/remapped.gif")
+		# Resize the image using ImageMagick
+		os.system("convert /home/pi/Desktop/orig.jpeg -resize 64x64 /home/pi/Desktop/resized.jpeg")
 
-# Open the image in Python  and convert to RGB
-im = Image.open("/home/pi/Desktop/remapped.gif")
-rgb_im = im.convert("RGB")
+		# Colourmap the imsage using ImageMagick
+		os.system("convert /home/pi/Desktop/resized.jpeg -dither None -remap /home/pi/Desktop/test.gif /home/pi/Desktop/remapped.gif")
 
-width, height = im.size		# get the size of the image
+		# Open the image in Python  and convert to RGB
+		im = Image.open("/home/pi/Desktop/remapped.gif")
+		rgb_im = im.convert("RGB")
 
-mc = Minecraft.create()
-
-#pos = mc.player.getPos()
-#previouspos
-#currentPos = pos
-
-for y in range(height):
-	for x in range(width):
-		rgb = rgb_im.getpixel((x,y))	# get the pixel from
-		#if currPos.x-prevPos.x > currPos.z-prevPos.z:
-			#if currPos.x-prevPos.x > 0:
-			#else:
-		#else:
-			#if currPos.z-prevPos.z >0:
+		width, height = im.size		# get the size of the image
+		time.sleep(0.3)
+		pos = mc.player.getPos()
+		xDiff = posPrev.x - pos.x
+		zDiff = posPrev.z - pos.z
+		print('X diff= ', abs(xDiff))
+		print('Z Diff= ', abs(zDiff))
+		
+		if abs(xDiff) > abs(zDiff):
+			
+			if xDiff > 0:
+				for y in range(height):
+					for x in range(width):
+						prevImage.append((x,y))
+						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						mc.setBlock(pos.x+10, height-y, pos.z+(width/2)+x, block.WOOL.id, minePalette[rgb])
+				print('dir 1')
 				
-		mc.setBlock(x, height-y, 0, block.WOOL.id, minePalette[rgb]) 
+			else:
+				for y in range(height):
+					for x in range(width):
+						prevImage.append((x,y))
+						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						mc.setBlock(pos.x-10, height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
+				print('dir 2')		
+		
+		elif abs(xDiff) < abs(zDiff):
+			
+			if zDiff > 0:
+				for y in range(height):
+					for x in range(width):
+						prevImage.append((x,y))
+						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						mc.setBlock(pos.x-(width/2)+x, height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
+				print('dir 3')
+
+				
+			else:
+				for y in range(height):
+					for x in range(width):
+						prevImage.append((x,y))
+						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						mc.setBlock(pos.x+(width/2)+x, height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	
+				print('dir 4')	
+		else:
+			print('No movement detected')
+				
+			
+'''
+		for y in range(height):
+			for x in range(width):
+				prevImage.append((x,y))
+				rgb = rgb_im.getpixel((x,y))	# get the pixel from
+				mc.setBlock(x, height-y, 0, block.WOOL.id, minePalette[rgb]) 
+		
+		#print(prevImage)
 
 
-
+'''
