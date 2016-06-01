@@ -46,7 +46,8 @@ def move ():
             y_centre = screensize_y / 2
         
             #~ print(x_mapped, y_mapped)
-            pyautogui.moveTo(x_centre + x_mapped, y_centre + y_mapped)
+            #~ pyautogui.moveTo(x_centre + x_mapped, y_centre + y_mapped)
+            pyautogui.moveTo(0, 0)
         
             
         except:
