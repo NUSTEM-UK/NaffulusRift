@@ -8,6 +8,8 @@ import serial
 from time import sleep
 import pyautogui
 
+pyautogui.PAUSE = 0.0
+
 def arduino_map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
@@ -35,14 +37,16 @@ def move ():
         try:
             x, y, z, a, b = data_list
             
-            x_mapped = arduino_map(int(x), -1024, 1024, -10, 10)
-            y_mapped = arduino_map(int(y), -1024, 1024, -10, 10)
+            #~ if (abs(int(x)) > deadzone_x) and (abs(int(y)) > deadzone_y):
             
+            x_mapped = arduino_map(int(x), -1024, 1024, -960, 960)
+            y_mapped = arduino_map(int(y), -1024, 1024, -540, 540)
+        
             x_centre = screensize_x / 2
             y_centre = screensize_y / 2
-            
-            print(x_mapped, y_mapped)
-            pyautogui.moveRel(x_centre + x_mapped, y_centre + y_mapped)
+        
+            #~ print(x_mapped, y_mapped)
+            pyautogui.moveTo(x_centre + x_mapped, y_centre + y_mapped)
         
             
         except:
