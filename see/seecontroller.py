@@ -36,80 +36,82 @@ minePalette = {
 prevImage = []
 
 while True:
-	posPrev = mc.player.getPos()	# continually get the players location
-			
-	if button.is_pressed == True:
-		print('Image request received')
-		
-		# Take the photo using the PiCamera
-		camera.capture('/home/pi/Desktop/orig.jpeg')
+    posPrev = mc.player.getPos()	# continually get the players location
+            
+    if button.is_pressed == True:
+        print('Image request received')
+        
+        # Take the photo using the PiCamera
+        camera.capture('/home/pi/Desktop/orig.jpeg')
 
-		# Resize the image using ImageMagick
-		os.system("convert /home/pi/Desktop/orig.jpeg -resize 64x64 /home/pi/Desktop/resized.jpeg")
+        # Resize the image using ImageMagick
+        os.system("convert /home/pi/Desktop/orig.jpeg -resize 64x64 /home/pi/Desktop/resized.jpeg")
 
-		# Colourmap the imsage using ImageMagick
-		os.system("convert /home/pi/Desktop/resized.jpeg -dither None -remap /home/pi/Desktop/test.gif /home/pi/Desktop/remapped.gif")
+        # Colourmap the imsage using ImageMagick
+        os.system("convert /home/pi/Desktop/resized.jpeg -dither None -remap /home/pi/Desktop/test.gif /home/pi/Desktop/remapped.gif")
 
-		# Open the image in Python  and convert to RGB
-		im = Image.open("/home/pi/Desktop/remapped.gif")
-		rgb_im = im.convert("RGB")
+        # Open the image in Python  and convert to RGB
+        im = Image.open("/home/pi/Desktop/remapped.gif")
+        rgb_im = im.convert("RGB")
 
-		width, height = im.size		# get the size of the image
-		time.sleep(0.3)
-		pos = mc.player.getPos()
-		xDiff = posPrev.x - pos.x
-		zDiff = posPrev.z - pos.z
-		print('X diff= ', abs(xDiff))
-		print('Z Diff= ', abs(zDiff))
-		
-		if abs(xDiff) > abs(zDiff):
-			
-			if xDiff > 0:
-				for y in range(height):
-					for x in range(width):
-						prevImage.append((x,y))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x+10, height-y, pos.z+(width/2)+x, block.WOOL.id, minePalette[rgb])
-				print('dir 1')
-				
-			else:
-				for y in range(height):
-					for x in range(width):
-						prevImage.append((x,y))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x-10, height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
-				print('dir 2')		
-		
-		elif abs(xDiff) < abs(zDiff):
-			
-			if zDiff > 0:
-				for y in range(height):
-					for x in range(width):
-						prevImage.append((x,y))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x-(width/2)+x, height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
-				print('dir 3')
+        width, height = im.size		# get the size of the image
+        time.sleep(0.3)
+        pos = mc.player.getPos()
+        xDiff = posPrev.x - pos.x
+        zDiff = posPrev.z - pos.z
+        print('X diff= ', abs(xDiff))
+        print('Z Diff= ', abs(zDiff))
+        
+        if abs(xDiff) > abs(zDiff):
+            
+            if xDiff > 0:
+                for y in range(height):
+                    for x in range(width):
+                        prevImage.append((x,y))
+                        rgb = rgb_im.getpixel((x,y))	# get the pixel from
+                        mc.setBlock(pos.x+10, height-y, pos.z+(width/2)+x, block.WOOL.id, minePalette[rgb])
 
-				
-			else:
-				for y in range(height):
-					for x in range(width):
-						prevImage.append((x,y))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x+(width/2)+x, height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	
-				print('dir 4')	
-		else:
-			print('No movement detected')
-				
-			
+            else:
+                for y in range(height):
+                    for x in range(width):
+                        prevImage.append((x,y))
+                        rgb = rgb_im.getpixel((x,y))	# get the pixel from
+                        mc.setBlock(pos.x-10, height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
+
+        elif abs(xDiff) < abs(zDiff):
+            
+            if zDiff > 0:
+                for y in range(height):
+                    for x in range(width):
+                        prevImage.append((x,y))
+                        rgb = rgb_im.getpixel((x,y))	# get the pixel from
+                        mc.setBlock(pos.x-(width/2)+x, height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
+                
+            else:
+                for y in range(height):
+                    for x in range(width):
+                        
+                        rgb = rgb_im.getpixel((x,y))	# get the pixel from
+                        mc.setBlock(pos.x+(width/2)+x, height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	
+                        prevImage.append((pos.x+(width/2)+x,height-y, pos.z+10))
+                        
+        else:
+            print('No movement detected')
+                
+            
 '''
-		for y in range(height):
-			for x in range(width):
-				prevImage.append((x,y))
-				rgb = rgb_im.getpixel((x,y))	# get the pixel from
-				mc.setBlock(x, height-y, 0, block.WOOL.id, minePalette[rgb]) 
-		
-		#print(prevImage)
-
-
+        for y in range(height):
+            for x in range(width):
+                prevImage.append((x,y))
+                rgb = rgb_im.getpixel((x,y))	# get the pixel from
+                mc.setBlock(x, height-y, 0, block.WOOL.id, minePalette[rgb]) 
+        
+        #print(prevImage)
 '''
+
+def clearImage():
+    for k in len(list):
+        a,b,c = list[k]     # get the x,y,z coordinates of each printed block.
+        mc.setBlock(a, b, c, block.AIR.id)
+        
+        
