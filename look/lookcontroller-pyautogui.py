@@ -2,19 +2,24 @@
 # Requires sudo pip3 install pyuserinput python3-xlib
 #
 # Code heavily based on https://www.raspberrypi.org/learning/microbit-game-controller/worksheet/
-# Non-working; can't get PyUserInput mouse module to do anything on Raspbian.
 
 
 import serial
 from time import sleep
-from pymouse import PyMouse
+import pyautogui
+
+pyautogui.PAUSE = 0.0
+
+def arduino_map(x, in_min, in_max, out_min, out_max):
+    return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
 def move ():
     deadzone_x = 200
     deadzone_y = 200
     key_delay = 0.4
     
-    mouse = PyMouse()
+    screensize_x, screensize_y = pyautogui.size()
+    print(screensize_x, screensize_y)
     
     PORT = "/dev/ttyACM1"
     #~ PORT = "/dev/serial/by-id/usb-MBED_MBED_CMSIS-DAP_9900023431864e45001210060000003700000000cc4d28bd-if01"
@@ -31,15 +36,20 @@ def move ():
         data_list = data.rstrip().split(' ')
         try:
             x, y, z, a, b = data_list
+            
+            #~ if (abs(int(x)) > deadzone_x) and (abs(int(y)) > deadzone_y):
+            
             x_mapped = arduino_map(int(x), -1024, 1024, -960, 960)
             y_mapped = arduino_map(int(y), -1024, 1024, -540, 540)
+        
+            x_centre = screensize_x / 2
+            y_centre = screensize_y / 2
+        
+            #~ print(x_mapped, y_mapped)
+            #~ pyautogui.moveTo(x_centre + x_mapped, y_centre + y_mapped)
+            pyautogui.moveTo(0, 0)
+        
             
-            x_centre = 960
-            y_centre = 540
-        
-            print(x_mapped, y_mapped)
-            mouse.move(x_centre + x_mapped, y_centre + y_mapped)
-        
         except:
             pass
         

@@ -8,4 +8,4 @@ def get_sensor_data():
 while True:
     sleep(100)
     get_sensor_data()
-    display.show("2", wait=False)
+    display.show("V", wait=False)
