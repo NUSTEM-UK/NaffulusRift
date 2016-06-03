@@ -12,6 +12,26 @@ mc = Minecraft.create()
 
 # Load the PiCamera module as camera
 camera = picamera.PiCamera()
+camera.resolution = (512,384)
+
+# Camera setup
+#~ camera.start_preview()
+#~ time.sleep(2)
+#~ iso = camera.iso
+#~ brightness = camera.brightness
+#~ camera.exposure_mode = 'off'
+#~ white_balance = camera.awb_gains
+#~ camera.awg_gains = white_balance
+#~ print('Setting ISO to:', iso)
+#~ print('Setting Brightness to:', brightness)
+#~ 
+#~ camera.stop_preview()
+
+def canvasWipe():
+	for m in range(len(prevImage)):
+		a,b,c = prevImage[m]
+		mc.setBlock(a,b,c,0)
+	prevImage[:]=[]
 
 # Define the palette of colours to be using when drawing the image
 minePalette = {
@@ -33,7 +53,8 @@ minePalette = {
     (0,0,0): 15			#black 15
 }
 
-prevImage = []
+prevCanvas = []
+prevImage= []
 
 while True:
 	posPrev = mc.player.getPos()	# continually get the players location
@@ -43,9 +64,10 @@ while True:
 		
 		# Take the photo using the PiCamera
 		camera.capture('/home/pi/Desktop/orig.jpeg')
+		
 
 		# Resize the image using ImageMagick
-		os.system("convert /home/pi/Desktop/orig.jpeg -resize 64x64 /home/pi/Desktop/resized.jpeg")
+		os.system("convert /home/pi/Desktop/orig.jpeg -level 0%,100%,1.2 -resize 64x64 /home/pi/Desktop/resized.jpeg")
 
 		# Colourmap the imsage using ImageMagick
 		os.system("convert /home/pi/Desktop/resized.jpeg -dither None -remap /home/pi/Desktop/test.gif /home/pi/Desktop/remapped.gif")
@@ -65,51 +87,49 @@ while True:
 		if abs(xDiff) > abs(zDiff):
 			
 			if xDiff > 0:
+				canvasWipe()
 				for y in range(height):
 					for x in range(width):
-						prevImage.append((x,y))
+						prevImage.append((pos.x-10, pos.y + height-y, pos.z+(width/2)-x))
 						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x+10, height-y, pos.z+(width/2)+x, block.WOOL.id, minePalette[rgb])
-				print('dir 1')
+						mc.setBlock(pos.x-10, pos.y + height-y, pos.z+(width/2)-x, block.WOOL.id, minePalette[rgb])
+				print('dir 2')
 				
 			else:
+				canvasWipe()
 				for y in range(height):
 					for x in range(width):
-						prevImage.append((x,y))
+						prevImage.append((pos.x+10, pos.y + height-y, pos.z-(width/2)+x))
 						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x-10, height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
-				print('dir 2')		
+						mc.setBlock(pos.x+10, pos.y + height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
+				print('dir 4')		
 		
 		elif abs(xDiff) < abs(zDiff):
 			
 			if zDiff > 0:
+				canvasWipe()
 				for y in range(height):
 					for x in range(width):
-						prevImage.append((x,y))
+						prevImage.append((pos.x-(width/2)+x, pos.y + height-y, pos.z-10))
 						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x-(width/2)+x, height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
-				print('dir 3')
+						mc.setBlock(pos.x-(width/2)+x, pos.y + height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
+				print('dir 1')
 
 				
 			else:
+				canvasWipe()
 				for y in range(height):
 					for x in range(width):
-						prevImage.append((x,y))
+						prevImage.append((pos.x+(width/2)-x, pos.y + height-y, pos.z+10))
 						rgb = rgb_im.getpixel((x,y))	# get the pixel from
-						mc.setBlock(pos.x+(width/2)+x, height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	
-				print('dir 4')	
+						mc.setBlock(pos.x+(width/2)-x, pos.y + height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	# create the new block from the real world image pixel
+
+						
+						
+				print('dir 3')	
 		else:
 			print('No movement detected')
 				
-			
-'''
-		for y in range(height):
-			for x in range(width):
-				prevImage.append((x,y))
-				rgb = rgb_im.getpixel((x,y))	# get the pixel from
-				mc.setBlock(x, height-y, 0, block.WOOL.id, minePalette[rgb]) 
+
 		
-		#print(prevImage)
-
-
-'''
+	
