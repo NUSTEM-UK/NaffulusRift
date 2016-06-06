@@ -65,7 +65,6 @@ while True:
 		# Take the photo using the PiCamera
 		camera.capture('/home/pi/Desktop/orig.jpeg')
 		
-
 		# Resize the image using ImageMagick
 		os.system("convert /home/pi/Desktop/orig.jpeg -level 0%,100%,1.2 -resize 64x64 /home/pi/Desktop/resized.jpeg")
 
@@ -81,47 +80,47 @@ while True:
 		pos = mc.player.getPos()
 		xDiff = posPrev.x - pos.x
 		zDiff = posPrev.z - pos.z
+		
+		canvasWipe()
+		
 		print('X diff= ', abs(xDiff))
 		print('Z Diff= ', abs(zDiff))
 		
 		if abs(xDiff) > abs(zDiff):
 			
 			if xDiff > 0:
-				canvasWipe()
+				
 				for y in range(height):
 					for x in range(width):
 						prevImage.append((pos.x-10, pos.y + height-y, pos.z+(width/2)-x))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x-10, pos.y + height-y, pos.z+(width/2)-x, block.WOOL.id, minePalette[rgb])
 				print('dir 2')
 				
 			else:
-				canvasWipe()
 				for y in range(height):
 					for x in range(width):
 						prevImage.append((pos.x+10, pos.y + height-y, pos.z-(width/2)+x))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x+10, pos.y + height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
 				print('dir 4')		
 		
 		elif abs(xDiff) < abs(zDiff):
 			
 			if zDiff > 0:
-				canvasWipe()
 				for y in range(height):
 					for x in range(width):
 						prevImage.append((pos.x-(width/2)+x, pos.y + height-y, pos.z-10))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x-(width/2)+x, pos.y + height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
 				print('dir 1')
 
 				
 			else:
-				canvasWipe()
 				for y in range(height):
 					for x in range(width):
 						prevImage.append((pos.x+(width/2)-x, pos.y + height-y, pos.z+10))
-						rgb = rgb_im.getpixel((x,y))	# get the pixel from
+						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x+(width/2)-x, pos.y + height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	# create the new block from the real world image pixel
 
 						
