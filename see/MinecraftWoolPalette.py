@@ -28,5 +28,5 @@ for k in range(4):
         newImage.putpixel((k,j), minePalette[i])
         i = i+1
 
-newImage.save("test.gif")
+newImage.save("/home/pi/Desktop/test.gif")
 

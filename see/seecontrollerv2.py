@@ -14,19 +14,6 @@ mc = Minecraft.create()
 camera = picamera.PiCamera()
 camera.resolution = (512,384)
 
-# Camera setup
-#~ camera.start_preview()
-#~ time.sleep(2)
-#~ iso = camera.iso
-#~ brightness = camera.brightness
-#~ camera.exposure_mode = 'off'
-#~ white_balance = camera.awb_gains
-#~ camera.awg_gains = white_balance
-#~ print('Setting ISO to:', iso)
-#~ print('Setting Brightness to:', brightness)
-#~ 
-#~ camera.stop_preview()
-
 def canvasWipe():
 	for m in range(len(prevImage)):
 		a,b,c = prevImage[m]
@@ -95,7 +82,6 @@ while True:
 						prevImage.append((pos.x-10, pos.y + height-y, pos.z+(width/2)-x))
 						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x-10, pos.y + height-y, pos.z+(width/2)-x, block.WOOL.id, minePalette[rgb])
-				print('dir 2')
 				
 			else:
 				for y in range(height):
@@ -103,7 +89,6 @@ while True:
 						prevImage.append((pos.x+10, pos.y + height-y, pos.z-(width/2)+x))
 						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x+10, pos.y + height-y, pos.z-(width/2)+x, block.WOOL.id, minePalette[rgb])		
-				print('dir 4')		
 		
 		elif abs(xDiff) < abs(zDiff):
 			
@@ -113,8 +98,6 @@ while True:
 						prevImage.append((pos.x-(width/2)+x, pos.y + height-y, pos.z-10))
 						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x-(width/2)+x, pos.y + height-y, pos.z-10, block.WOOL.id, minePalette[rgb])
-				print('dir 1')
-
 				
 			else:
 				for y in range(height):
@@ -122,13 +105,8 @@ while True:
 						prevImage.append((pos.x+(width/2)-x, pos.y + height-y, pos.z+10))
 						rgb = rgb_im.getpixel((x,y))
 						mc.setBlock(pos.x+(width/2)-x, pos.y + height-y, pos.z+10, block.WOOL.id, minePalette[rgb])	# create the new block from the real world image pixel
-
 						
-						
-				print('dir 3')	
 		else:
 			print('No movement detected')
-				
 
-		
-	
+if __name__ == '__main__'
