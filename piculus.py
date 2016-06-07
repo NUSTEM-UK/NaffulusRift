@@ -62,7 +62,7 @@ if __name__ == "__main__":
 	s.stopbits = serial.STOPBITS_ONE
 	
 	keyboard = PyKeyboard()
-	jumpPad = Button(4, pull_up=True)
+	jumpPad = Button(11, pull_up=True)
 	
 	while True:
 		move()	# read serial and process move controller commands
