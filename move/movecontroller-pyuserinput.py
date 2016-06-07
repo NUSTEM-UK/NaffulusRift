@@ -1,13 +1,15 @@
+# WORKING
+# (kinda)
+#
 # PyUserInput test.
 # Requires sudo pip3 install pyuserinput python3-xlib
 #
 # Code heavily based on https://www.raspberrypi.org/learning/microbit-game-controller/worksheet/
 
-
-
 import serial
 from time import sleep
 from pykeyboard import PyKeyboard
+from gpiozero import Button
 
 def move ():	
 	deadzone_x = 200
@@ -15,6 +17,7 @@ def move ():
 	key_delay = 0.4
 	
 	keyboard = PyKeyboard()
+    jumpPad = Button(4, pull_up=True)
 		
 	PORT = "/dev/ttyACM0"
 	#~ PORT = "/dev/serial/by-id/usb-MBED_MBED_CMSIS-DAP_9900023431864e45001210060000003700000000cc4d28bd-if01"
@@ -27,6 +30,11 @@ def move ():
 	s.stopbits = serial.STOPBITS_ONE
 	
 	while True:
+        if jumpPad.is_pressed:
+            # It's set to pullup then shorted to ground, so we're working backwards here.
+            keyboard.press_key('space')
+            time.sleep(key_delay)
+            keyboard.release_key('space')
 		data = s.readline().decode('UTF-8')
 		data_list = data.rstrip().split(' ')
 		try:
@@ -53,7 +61,6 @@ def move ():
 				keyboard.release_key('w')
 				keyboard.release_key('s')
 			#~ print(x, y, z, a, b)
-		
 		except:
 			pass
 		
