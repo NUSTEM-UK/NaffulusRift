@@ -11,7 +11,7 @@
 /**************************************************************************/
  
 #include <ProTrinketMouse.h>    // Pro Trinket V-USB mouse emulator
-#define  DEBUG  0               // Set to 1 for serial console debugging, 0 otherwise
+#define  DEBUG  1               // Set to 1 for serial console debugging, 0 otherwise
 
 const uint8_t LEFTBUTTON  = 8;  // Left Mouse Button on this Pro Trinket Pin
 const uint8_t RIGHTBUTTON = 9;  // Right Mouse Button on Pro Trinket
